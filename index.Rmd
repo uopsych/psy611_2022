@@ -1,0 +1,81 @@
+---
+title: "Psy 611: Data Analysis I"
+subtitle: "Department of Psychology, University of Oregon"
+author: "Fall 2022. Instructor: Sara J. Weston"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+# Overview
+
+This course is the first in a 3-term sequence of classes designed to provide a
+thorough grounding in statistical concepts, methods, and applications of relevance to psychological science and related sciences. The aim of the course is to help students develop skills in the analysis and interpretation of real psychological data. Our focus will be both conceptual and mathematical -- that is, understanding the underlying mathematical principals of statistics enhances ones' ability to interpret and think critically about the use of statistics. Students will also learn the basics of the R language and use this program to wrangle, visualize, summarize, and test hypotheses with data. 
+
+## Meeting times and locations
+
+**Lecture:** Tuesdays and Thursdays, 10:00 - 11:20am, [107 ESL](https://map.uoregon.edu/) 
+
+**Lab (Section 15486):** Fridays,
+9:00 - 10:20 am, Straub 006 
+
+**Lab (Section 15487):** Fridays,10:30 - 11:50 am, Straub 006 
+
+
+<!-- , 10:00-11:20am, [Zoom](https://uoregon.zoom.us/j/97605175179?pwd=MVFoN2VudVM4a2Y5OXFvaklTRS85Zz09) -->
+
+This class is officially offered in-person. I will give live lectures in Lawrence 222 and you are welcome to attend in person. At the same time, my goal is to make it safe and easy for students to access this course in whatever format they are comfortable. Therefore, all lectures will be recorded for later viewing. In-person attendance in lecture is not required. Feel free to stay at home if you prefer. And **absolutely do not attend class in-person if you feel unwell**. If you have COVID symptoms or have been in close contact with someone with known COVID, quarantine and call the UO Health Center at 541-346-2770. 
+
+For Zoom best practices and tips, see this [cheat sheet](readings/PSY 611 Zoom Cheat Sheet.pdf).
+
+## Instructors
+
+**Sara Weston** -- [sweston2@uoregon.edu](mailto:sweston2@uoregon.edu)
+Office Hours: [By appointment](https://calendly.com/sara-weston/weston-office-hours) 
+
+**Bernice Cheung** -- [kcheung3@uoregon.edu](mailto:kcheung3@uoregon.edu)
+Office Hours: [By appointment](https://calendly.com/bernicecheung)
+
+**Max Drascher** -- [mdrasche@uoregon.edu](mailto:mdrasche@uoregon.edu)
+Office Hours: Thursdays 12-2pm, Straub 419
+
+# Materials
+
+## Textbook
+
+We will primarily be referring to chapters in [_Learning Statistics with R_](https://learningstatisticswithr-bookdown.netlify.com/index.html) by Danielle Navarro. This textbook is available for free online. You may choose to purchase a paper copy if you wish, but it is not required. Additional readings assignments will be posted here. 
+
+## R and RStudio
+
+Students must have the latest version of R, which can be downloaded [here](https://ftp.osuosl.org/pub/cran/). It is strongly recommended that students also download the RStudio GUI, available [here](https://www.rstudio.com/products/rstudio/download/#download). Both softwares are free. 
+
+## Resources for R and RStudio
+
+While we will be covering the use of R and RStudio extensively in both lecture and lab, one of the key skills required to use R is the ability to find answers on the Internet. The R commmunity (sometimes referred to as the useR community) tends to be friendly and helpful and enjoys solving R-related problems in their spare time. For that reason, many common questions or problems have been posted to spaces online and answered by smart people. Finding and deciphering those answers is the key skill you should seek to hone this year. It's much more important than remembering function names. 
+
+Here are some sites where you can find the answers to many R questions and learn new tricks:
+
+### For learning the basics
+ - [_YaRrr, the Pirate's Guide to R_](https://bookdown.org/ndphillips/YaRrr/) by Nathaniel Phillips
+ - [_R for Data Science_](https://r4ds.had.co.nz/) by Hadley Wickham
+ - [_R Cookbook_](http://www.cookbook-r.com/) by Winston Chang
+ - [_An Introduction to Statistical Learning_](http://www-bcf.usc.edu/~gareth/ISL) by Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani
+
+### For plotting
+
+  - The [Graphs chapter of _R Cookbook_](http://www.cookbook-r.com/Graphs/) by Winston Chang
+  
+### Quick resources
+
+  - [Cheat Sheets](https://www.rstudio.com/resources/cheatsheets) 
+  - [Quick-R](https://www.statmethods.net) 
+  
+### Online forums
+  - [Stack Overflow](https://stackoverflow.com) \
+  - [Cross Validated](https://stats.stackexchange.com)
+
+
+

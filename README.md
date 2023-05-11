@@ -1,1 +1,2 @@
-# psy611_2022
+# psy611
+Materials for PSY 611: Data Analysis I

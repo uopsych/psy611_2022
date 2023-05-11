@@ -1,0 +1,441 @@
+---
+title: 'Lecture 17: RMarkdown (Bonus Lab)'
+output:
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# suppress scientific notation
+options(scipen = 999)
+```
+
+This document contains all the information shared in lecture (Nov 22, 2022). However, the format of the lecture differs from previous lectures and labs. If you were not able to join the lecture in person or live on Zoom, I strongly recommend watching the video. The document here is meant to serve as a summary sheet/reference, but not as the formal teaching tool. 
+
+
+# Purpose
+
+The purpose of today's lecture/lab is to get more familiar with RMarkdown. RMarkdown is a file format that allows us to produce reports. You can use RMarkdown to produce html files (as we have been doing), but also word documents, pdfs, slideshows, websites, and more. In 612, we will be using RMarkdown to create APA manuscripts in R. 
+
+Here are two resources about RMarkdown that I recommend bookmarking: this [cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) and this [book](https://bookdown.org/yihui/rmarkdown/).
+
+<br />
+
+You'll need the following packages for this lecture. If you don't have them installed, be sure to do that before loading them:
+
+```{r, message = F, results = 'hide'}
+library(tidyverse)
+library(gt)
+library(gtsummary)
+```
+
+
+***
+
+# YAML
+
+The YAML is the header of your RMarkdown file that starts and ends with `---`.  When you open a new RMarkdown file, it will automatically create a default YAML with a title, author, date, and output. You can set the output to which file type you want the report to print out in (`html_document`, `pdf_document`, `word_document`, `ioslides_presentation`, etc.)
+
+```yaml
+---
+title: Lab 7: RMarkdown
+author: Vinita Vader
+date: November 11, 2021
+output: 
+  html_document
+---
+```
+
+For an html document, you can add a table of contents by specifying `toc: true` under `html_document`. If you like how the table of contents is floating to the left like it is on the course website, you can also add `toc_float: true`. Additionally, you can customize your theme, change the width and height of figures for the whole report, number your sections, and so on. For how to do these, refer [here](https://bookdown.org/yihui/rmarkdown/html-document.html).  
+
+```yaml
+---
+title: 'Lab 7: RMarkdown'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+```
+***
+
+# Code chunks
+
+You can create a new code chunk with the shortcut `Ctrl + Alt + I`  (or `Cmd + Option + I` if you have a Mac). 
+
+```{r}
+
+```
+
+## Code chunk options
+
+Code chunks have the default setting that all code will be evaluated and all code and results of the code will be printed out in your report when you knit it. But you may want to override the defaults. For example, you may want your final report to show **only** your figures but not the code that created the figures. You would edit the code chunk, inside the brackets, like this:
+
+
+````markdown
+`r ''````{r, echo = FALSE}
+````
+
+Here are some more useful options.
+
+|Option          |Purpose                                               | Useful for...|
+|:--------------|:------------------------------------------|:----------------------------------|
+|`echo = FALSE`    |The results will print but not the code chunk     | If you want to hide your code| 
+|`eval = FALSE`    |The code chunk will print but is not evaluated     |If you want to showcase sample code|
+|`include = FALSE` | The code chunk is evaluated but nothing is printed| You are loading libraries|
+|`warning = FALSE` | Warning messages will not be displayed|You want to get rid of a warning message in your report but you still want it to print the rest of your results out (if it is not a warning message try `message = FALSE`)|
+|`error = TRUE` | The error message will display in your report instead of in the console | You can use this to knit even when you have an error message|
+
+Refer [here](https://bookdown.org/yihui/rmarkdown/r-code.html) for more options. To change the settings for all of the code chunks in your report, you can set a global option. For example, if I wanted only the results and no code to print out for my entire report, I would put the code `knitr::opts_chunk$set(echo = FALSE)` in my first code chunk.
+
+<br />
+
+***
+
+# Tables and tabbed sections  {.tabset .tabset-fade .tabset-pills}
+
+Tabbed sections are a way to organize your html file a little better. Follow this format exactly to make a tabbed section. Your first line will be the header of the section `# header title {.tabset .tabset-fade .tabset-pills}` followed by tab names `## tab 1`, `## tab 2`, and so on. In this section, we will also be exploring how to make a table using the `gt` and `gtsummary` packages. 
+
+We'll show some of the code today, but there's a lot more on the websites for these packages: [gt.rstudio.com](https://gt.rstudio.com/) and [www.danieldsjoberg.com/gtsummary/](https://www.danieldsjoberg.com/gtsummary/).
+
+<br />
+
+## Table 1
+
+Here is a simple data frame.
+
+```{r, message = FALSE}
+(table_1 <- gtcars %>% 
+   # which variables
+   select(year, hp, mpg_c, mpg_h, msrp) %>% 
+   # this is a big df, so let's just work with the first 10 rows
+   slice_head(n = 10)) 
+```
+
+***
+
+## Table 2
+This is a simple table using the `gt::gt` function. 
+
+```{r}
+#Creating a gt table
+table_1 %>% 
+  gt()
+```
+
+<br />
+
+This is technically a little better but we can further customize it.
+
+***
+
+
+## Table 3
+
+With the `gt::gt` function, you can add a table caption, change the column names, and format the currency column so that it's a little easier to read.
+
+```{r}
+table_1 %>% 
+  gt(
+    caption = "Table 1. An example dataset from the gt package." #add table caption
+  ) %>% 
+  cols_label( # rename the columns
+    year = "Year", 
+    hp = "Horsepower", 
+    mpg_c = "MPG Country", 
+    mpg_h = "MPG Highway",
+    msrp = "MSRP ($)"
+  ) %>% 
+  fmt_currency(
+    columns = c(msrp),
+    currency = "USD"
+  )
+
+```
+
+***
+
+## Table 4
+
+But we can do even more! Let's rename our MPG columns and put them under a single banner. We can also group our values by year.
+
+```{r}
+table_1 %>% 
+  group_by(year) %>% # group by year
+  gt(
+    caption = "Table 2. An example dataset from the gt package." #add table caption
+  ) %>% 
+  cols_label( # note that year is not here anymore
+    hp = "Horsepower", 
+    mpg_c = "Country", 
+    mpg_h = "Highway",
+    msrp = "MSRP ($)"
+  ) %>% 
+  tab_spanner(
+    label = "Miles Per Gallon",
+    columns = c(mpg_c, mpg_h)
+  )
+```
+
+***
+
+## Table 5
+
+It would be helpful to include some summary statistics here.
+
+```{r}
+table_1 %>% 
+  group_by(year) %>% 
+  gt(
+    caption = "Table 3. An example dataset from the gt package." #add table caption
+  ) %>% 
+  cols_label(
+    year = "Year", 
+    hp = "Horsepower", 
+    mpg_c = "Country", 
+    mpg_h = "Highway",
+    msrp = "MSRP ($)"
+  ) %>% 
+  tab_spanner(
+    label = "Miles Per Gallon",
+    columns = c(mpg_c, mpg_h)
+  ) %>% 
+  summary_rows(
+    columns = everything(), #all the columns
+    fns = list( # which summary statistics
+      Mean = ~mean(.),
+      SD = ~sd(.)
+    )
+  )
+```
+
+***
+
+## Table 6 (Summary statistics)
+
+If I'm writing a manuscript, I don't want to plot the entire table of data. Instead, I only want those summary statistics.Let's combine the `gt` package with the `gtsummary` package for some useful descriptives.
+
+```{r}
+gtcars %>% 
+  select(year, hp, mpg_c, mpg_h, msrp) %>% 
+  tbl_summary(
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})"
+    ))
+```
+
+
+***
+
+## Table 7
+
+And of course, if this is to be ready for publication, I should rename the variables and do some light formatting. Here I'm also testing differences by groups.
+
+```{r}
+gtcars %>% 
+  select(bdy_style, year, hp, mpg_c, mpg_h, msrp) %>% 
+  # for this example, i want to work with only two groups,
+  # so here i'm collapsing anyting that's not a coupe into
+  # a "not coupe" category
+  mutate(
+    bdy_style = case_when(
+      bdy_style == "coupe" ~ "coupe",
+      TRUE ~ "not coupe"
+     )) %>% 
+  # now we calculate summary statistics
+  tbl_summary(
+    by = bdy_style, #separate summary statistics by group
+    label = list(
+      year ~ "Year",
+      hp ~ "Horsepower",
+      msrp ~ "MSRP ($)",
+      mpg_h ~ "MPG (Highway)",
+      mpg_c ~ "MPG (Country)"
+    ),
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})"
+      )
+    )  %>% 
+  add_n() %>% # add column with total number of non-missing observations
+  add_p(test = list(
+    all_categorical() ~ "chisq.test",
+    all_continuous() ~ "t.test"
+  )) %>% # test for a difference between groups
+  bold_labels() # make it pretty
+```
+
+***
+
+## Other packages
+
+There are many great packages available for making tables. One challenge is that no single package will do everything you'll ever want. Some are great at summarizing models, some place nice with HTML and Word and PDFs, some are very customizable, but few are all three. Here are a few packages that we recommend. 
+
+* [knitr and kableExtra](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html)
+* [sjPlot](https://strengejacke.github.io/sjPlot/)
+* [stargazer](https://cran.r-project.org/web/packages/stargazer/vignettes/stargazer.pdf)
+* [flextable](https://davidgohel.github.io/flextable/)
+* [huxtable](https://hughjonesd.github.io/huxtable/)
+
+
+# Inline text
+
+Inline text refers to text that is outside of code chunks. I am currently writing in inline text. In order to format the text that you write outside of code chunks, you have to abide by Markdown syntax. For example, you may want to **bold**, *italicize*, or ~~strikethrough~~ a word. You also may want to insert a list, table, headers, link, image, blockquote, or equation. Refer to the RMarkdown [cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) for how to format in Markdown syntax.
+
+<center>
+![](resources/lab7/syntax.jpg)
+</center><br />
+
+<br />
+
+***
+
+## Inline code {.tabset .tabset-fade .tabset-pills}
+
+### Inline code
+
+Sometimes you may want to code outside of a code chunk. The most common reason for this is to report statistics in your inline text. For example, let's say you are writing a manuscript in R and you need to report the mean and standard deviation for a variable. You can calculate the mean and standard deviation of the variable in the code chunk, then call the answer in the in-line text. This will reduce human transfer errors. 
+
+```{r}
+#Descriptive stats for car hp 
+
+range_hp_low <- range(gtcars$hp)[1]
+
+range_hp_high <- range(gtcars$hp)[2]
+
+m_hp <- mean(gtcars$hp)
+
+sd_hp <- sd(gtcars$hp)
+
+```
+
+Now, I can call the variables inline, like this: The horsepower of cars ranged from `r range_hp_low` to `r range_hp_high` (*M* = `r m_hp`, *SD* = `r sd_hp`). 
+
+<br />
+
+***
+
+### Advanced code
+
+You can do more than call a variable outside of the code chunks. For example, here is some code that will make the sentence look a little nicer. However, when you code outside of the code chunks, the code becomes really difficult to read, so I recommend keeping complicated code inside of the code chunks.
+
+```{r}
+#Descriptive stats for car price 
+
+range_msrp_low <- range(gtcars$msrp)[1]
+
+range_msrp_high <- range(gtcars$msrp)[2]
+
+m_msrp <- mean(gtcars$msrp)
+
+sd_msrp <- sd(gtcars$msrp)
+
+```
+
+
+The msrp of gtcars ranged from `r paste0("$", format(as.double(range_msrp_low), nsmall = 2))` to `r paste0("$", format(as.double(range_msrp_high), nsmall = 2, big.mark = ","))` (*M* = `r paste0("$", format(m_msrp, big.mark = ",", nsmall = 2))`, *SD* = `r paste0("$",format(sd_msrp, big.mark= ","))`). 
+
+Instead of this mess, you want to first create your variables: 
+
+```{r}
+range_msrp_low <- range(gtcars$msrp)[1] %>%
+  as.double() %>% #makes range_msrp_low a double (rather than an integer)
+  format(nsmall = 2) %>% #format it to two decimal places
+  paste0("$", .) #add a dollar sign before the number
+
+range_msrp_high <- range(gtcars$msrp)[2] %>% 
+  as.double() %>% 
+  format(nsmall = 2, big.mark = ",") %>% #big.mark adds a comma for large numbers
+  paste0("$", .)
+
+m_msrp <- gtcars$msrp %>%
+  mean() %>% 
+  format(nsmall = 2, big.mark = ",") %>% 
+  paste0("$", .)
+
+sd_msrp <- gtcars$msrp %>%
+  sd() %>% 
+  format(nsmall = 2, big.mark = ",") %>% 
+  paste0("$", .)
+
+```
+
+And then you can print your sentence: The msrp of gtcars ranged from `r range_msrp_low` to `r range_msrp_high` (*M* = `r m_msrp`, *SD* = `r sd_msrp`).
+
+<br />
+
+***
+
+### Creating a function
+```{r}
+#To remove redundancy in your code, you may want to create a function instead
+#Here I've created a function with one argument "x" that converts numbers into money formatted numbers
+money_format <- function(x){
+  x %>%
+  as.double() %>% 
+  format(nsmall = 2, big.mark = ",") %>% 
+  paste0("$", .)
+}
+
+#testing the function
+money_format(23948234)
+
+money_format(23)
+
+gtcars$msrp %>% 
+  mean() %>% 
+  money_format()
+```
+
+Your new function will work inline too: `r money_format(32334)`
+
+***
+
+# Knitting errors
+
+Knitting errors are particularly frustrating error messages if you thought you were done with your project and the code had worked up to the point of knitting. Plus, the messages can be vague and confusing. Here's our advice:
+
+* Knit early and knit often. If you're working on the homework, it's a good idea to knit at least once after every problem.
+
+* When you get an error, you first want to try to locate where the error is. If you think you found it, you can comment out the entire code chunk by highlighting the code and typing `Ctrl + Shift + C` (or `Cmd + Shift + C` on a Mac), or you can change the code chunk options to `error = TRUE`. You should be able to knit now if the error message is coming from the code chunk that you just disabled. Otherwise, disable more code chunks, one at a time until it knits.
+
+* Once you've established where the error is, you may still not understand why the code isn't working. The most common reasons are...
+  + Your data set wasn't imported properly.
+  + You haven't loaded the proper libraries and you need to add at least one `library()` command.
+  + You are referring to a variable that hasn't been assigned yet. It probably worked before because it was assigned in your global environment, but it needs to be assigned before the line of code in order for it to knit.
+
+***
+
+# Minihacks
+
+For today's minihacks, you will be using RMarkdown to create your own html file.
+
+1. Open up a new RMarkdown file and erase everything but the YAML. Edit the YAML in the following ways:
+    + Change the title to "Lecture 17 Minihacks."
+    + Remove the author and date.
+    + Under output, add a table of contents, numbered sections, and choose a theme. You should be outputting to an html file.  Some html themes you may want to try are `cerulean`, `journal`, `flatly`, `lumen`, `paper`, and `readable`.
+    + Knit the file. You should only see the title. The color and font will depend on which theme you chose.
+
+2. Create a new code chunk and load the following libraries: `tidyverse`, `gt`, `gtsummary`, `rio` and `here`. 
+    + Change the default chunk option so that the code is evaluated, but neither the code nor any resulting messages will show up in your report. You can do this all by changing one default option.
+    + In the same code chunk, using the `rio` and `here` packages, import the data set [us_contagious_diseases.csv](../labs/resources/lab7/us_contagious_diseases.csv) and store it in a data frame called data.
+    + Finally, in this code chunk, add the code `options(scipen = 999)`, which will turn off scientific notation 
+    
+
+3. Create a header called "Tables". The `us_contagious_diseases` data set has the yearly counts for seven contagious diseases for the years 1928 - 2011. Use these data to create the following tables (include each table in a separate tab under your new header):
+    + A table showing the first 8 rows of the data frame. Be sure to format the column names. Include summary statistics (mean and standard deviation) of the continuous variables. 
+    + A table summarizing the continuous variables (i.e., not state). Present these statistics separately for each disease. 
+    + Pick 2 of the diseases and create a table summarizing the continuous variables only for these groups. Include p-values testing the differences between them. Be sure to use t-tests to calculate those p-values. 
+    
+4. Create one last level 1 header called "Questions". Create three subheadings "Question 1", "Question 2", and "Question 3". **Using in-line code**, answer the following questions under the respective subheading:
+    + Question 1) Measles had the highest number of infections in the US during this time span. What was the number of infections?
+    + Question 2) What was the average number of Measles cases per year in the US from 1928 to 2011? Round this number to two decimal places.
+    + Question 3) In 1938, Wisconsin had the highest number of Measles cases per capita. What percent of Wisconsin's population contracted Measles in 1938? 
